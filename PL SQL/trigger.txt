@@ -1,0 +1,19 @@
+-- Create a table for storing employee information
+CREATE TABLE employees (
+    employee_id NUMBER PRIMARY KEY,
+    employee_name VARCHAR2(50),
+    salary NUMBER
+);
+
+-- Create a trigger to log changes in the salary
+CREATE OR REPLACE TRIGGER log_salary_change
+BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+    IF :NEW.salary <> :OLD.salary THEN
+        -- Log the salary change
+        INSERT INTO salary_changes (employee_id, old_salary, new_salary, change_date)
+        VALUES (:NEW.employee_id, :OLD.salary, :NEW.salary, SYSDATE);
+    END IF;
+END;
+/

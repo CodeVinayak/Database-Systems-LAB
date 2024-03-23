@@ -1,0 +1,102 @@
+Given a relation SE (year, month, day, shares traded, Amount volume) with trading
+data from the Stock Exchange.
+‘ a. Write a PL/SQL program to list each trading day in order of number of shares
+traded, and show each day’s rank. 
+b. Write a PL/SQL program to generate a report showing the number of shares
+traded, number of trades, and total amount volume broken down by year, each
+month of each year, and each trading day. 
+
+A.
+CREATE TABLE SE (
+  trading_date DATE,
+  shares_traded NUMBER,
+  amount_volume NUMBER
+);
+-- Insert some sample data
+INSERT INTO SE VALUES (TO_DATE('2023-01-01', 'YYYY-MM-DD'), 1000, 50000);
+INSERT INTO SE VALUES (TO_DATE('2023-01-01', 'YYYY-MM-DD'), 2000, 75000);
+DECLARE
+  CURSOR trading_report_cursor IS
+    SELECT TO_CHAR(trading_date, 'YYYY') AS year,
+           TO_CHAR(trading_date, 'MM') AS month,
+           TO_CHAR(trading_date, 'YYYY-MM-DD') AS trading_day,
+           COUNT(*) AS num_trades,
+           SUM(shares_traded) AS total_shares,
+           SUM(amount_volume) AS total_amount_volume
+    FROM SE
+    GROUP BY TO_CHAR(trading_date, 'YYYY'), TO_CHAR(trading_date, 'MM'), TO_CHAR(trading_date, 'YYYY-MM-DD')
+    ORDER BY year, month, trading_day;
+
+  v_year VARCHAR2(4);
+  v_month VARCHAR2(2);
+  v_trading_day VARCHAR2(20);
+  v_num_trades NUMBER;
+  v_total_shares NUMBER;
+  v_total_amount_volume NUMBER;
+
+BEGIN
+  FOR trading_report_rec IN trading_report_cursor LOOP
+    v_year := trading_report_rec.year;
+    v_month := trading_report_rec.month;
+    v_trading_day := trading_report_rec.trading_day;
+    v_num_trades := trading_report_rec.num_trades;
+    v_total_shares := trading_report_rec.total_shares;
+    v_total_amount_volume := trading_report_rec.total_amount_volume;
+
+    DBMS_OUTPUT.PUT_LINE('Year: ' || v_year || ', Month: ' || v_month || ', Trading Day: ' || v_trading_day);
+    DBMS_OUTPUT.PUT_LINE('  Number of Trades: ' || v_num_trades);
+    DBMS_OUTPUT.PUT_LINE('  Total Shares Traded: ' || v_total_shares);
+    DBMS_OUTPUT.PUT_LINE('  Total Amount Volume: ' || v_total_amount_volume);
+    DBMS_OUTPUT.PUT_LINE(' ');
+  END LOOP;
+END;
+/
+
+B.
+CREATE TABLE SE (
+  trading_date DATE,
+  shares_traded NUMBER,
+  amount_volume NUMBER
+);
+
+-- Insert some sample data
+INSERT INTO SE VALUES (TO_DATE('2023-01-01', 'YYYY-MM-DD'), 1000, 50000);
+INSERT INTO SE VALUES (TO_DATE('2023-01-01', 'YYYY-MM-DD'), 2000, 75000);
+
+-- Add more sample data as needed
+DECLARE
+  CURSOR trading_report_cursor IS
+    SELECT TO_CHAR(trading_date, 'YYYY') AS year,
+           TO_CHAR(trading_date, 'MM') AS month,
+           TO_CHAR(trading_date, 'YYYY-MM-DD') AS trading_day,
+           COUNT(*) AS num_trades,
+           SUM(shares_traded) AS total_shares,
+           SUM(amount_volume) AS total_amount_volume
+    FROM SE
+    GROUP BY TO_CHAR(trading_date, 'YYYY'), TO_CHAR(trading_date, 'MM'), TO_CHAR(trading_date, 'YYYY-MM-DD')
+    ORDER BY year, month, trading_day;
+
+  v_year VARCHAR2(4);
+  v_month VARCHAR2(2);
+  v_trading_day VARCHAR2(20);
+  v_num_trades NUMBER;
+  v_total_shares NUMBER;
+  v_total_amount_volume NUMBER;
+
+BEGIN
+  FOR trading_report_rec IN trading_report_cursor LOOP
+    v_year := trading_report_rec.year;
+    v_month := trading_report_rec.month;
+    v_trading_day := trading_report_rec.trading_day;
+    v_num_trades := trading_report_rec.num_trades;
+    v_total_shares := trading_report_rec.total_shares;
+    v_total_amount_volume := trading_report_rec.total_amount_volume;
+
+    DBMS_OUTPUT.PUT_LINE('Year: ' || v_year || ', Month: ' || v_month || ', Trading Day: ' || v_trading_day);
+    DBMS_OUTPUT.PUT_LINE('  Number of Trades: ' || v_num_trades);
+    DBMS_OUTPUT.PUT_LINE('  Total Shares Traded: ' || v_total_shares);
+    DBMS_OUTPUT.PUT_LINE('  Total Amount Volume: ' || v_total_amount_volume);
+    DBMS_OUTPUT.PUT_LINE(' ');
+  END LOOP;
+END;
+/

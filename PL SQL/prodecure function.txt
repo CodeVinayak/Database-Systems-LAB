@@ -1,0 +1,68 @@
+CREATE TABLE college_students (
+ student_id NUMBER,
+ student_name VARCHAR2(50),
+ student_department VARCHAR2(50),
+ student_ccgpa NUMBER
+);
+-- • Procedure Created
+CREATE OR REPLACE PROCEDURE insert_student(
+ p_student_id NUMBER,
+ p_student_name VARCHAR2,
+ p_student_department VARCHAR2,
+ p_student_ccgpa NUMBER
+) AS
+BEGIN
+ INSERT INTO college_students (student_id, student_name, 
+student_department, student_ccgpa)
+ VALUES (p_student_id, p_student_name, p_student_department, 
+p_student_ccgpa);
+ COMMIT;
+END insert_student;
+/
+-- • Function created
+CREATE OR REPLACE FUNCTION count_students RETURN NUMBER IS
+ student_count NUMBER;
+BEGIN
+ SELECT COUNT(*) INTO student_count FROM college_students;
+ RETURN student_count;
+END count_students;
+/
+-- • Procedure created
+CREATE OR REPLACE PROCEDURE drop_table IS
+BEGIN
+ EXECUTE IMMEDIATE 'DROP TABLE college_students';
+ DBMS_OUTPUT.PUT_LINE('Table Dropped');
+ COMMIT;
+END drop_table;
+/
+BEGIN
+ insert_student(1, 'Aman Nirmarlkar', 'MSC CS', 7.5);
+ insert_student(2, 'Anil Kumar', 'MSC IT', 6.9);
+ insert_student(3, 'Aakash Yadav', 'BCA', 8.0);
+ insert_student(4, 'Chirag Setpal', 'MCA', 7.8);
+ insert_student(5, 'Dheeraj Sahu', 'Btech', 8.5);
+END;
+/
+-- • Statement processed
+BEGIN
+ FOR rec IN (SELECT * FROM college_students) LOOP
+ DBMS_OUTPUT.PUT_LINE('Student ID: ' || rec.student_id);
+ DBMS_OUTPUT.PUT_LINE('Student Name: ' || rec.student_name);
+ DBMS_OUTPUT.PUT_LINE('Student Department: ' || 
+rec.student_department);
+ DBMS_OUTPUT.PUT_LINE('Student CGPA: ' || rec.student_ccgpa);
+ DBMS_OUTPUT.PUT_LINE('--------------------------');
+ END LOOP;
+END;
+/
+DECLARE
+ total_students NUMBER;
+BEGIN
+ total_students := count_students;
+ DBMS_OUTPUT.PUT_LINE('Total Students: ' || total_students);
+END;
+/
+BEGIN
+ drop_table;
+END;
+/

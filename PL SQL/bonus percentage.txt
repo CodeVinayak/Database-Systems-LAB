@@ -1,0 +1,12 @@
+declare
+empsalary number:=95000;
+begin
+if empsalary>100000 then
+dbms_output.put_line('Salary is more then 1 lakh hence flat 10000 bonus');
+dbms_output.put_line(empsalary+10000);
+else
+dbms_output.put_line('salary is less than 1 lakh hence 3% bonus');
+dbms_output.put_line(empsalary+empsalary*0.3);
+end if;
+end;
+/

@@ -1,0 +1,76 @@
+-- Create the 'Students' table
+CREATE TABLE students (
+    student_id INT PRIMARY KEY,
+    student_name VARCHAR(50),
+    email VARCHAR(100)
+);
+
+-- Insert data into the 'Students' table
+INSERT INTO students (student_id, student_name, email)
+VALUES
+    (1, 'Alice', 'alice@example.com'),
+    (2, 'Bob', 'bob@example.com'),
+    (3, 'Charlie', 'charlie@example.com'),
+    (4, 'David', 'david@example.com'),
+    (5, 'Eva', 'eva@example.com'),
+    (6, 'Frank', 'frank@example.com');
+
+-- Create the 'Courses' table
+CREATE TABLE courses (
+    course_id INT PRIMARY KEY,
+    course_name VARCHAR(50),
+    instructor VARCHAR(50)
+);
+
+-- Insert data into the 'Courses' table
+INSERT INTO courses (course_id, course_name, instructor)
+VALUES
+    (1, 'Mathematics', 'Mr. Smith'),
+    (2, 'Physics', 'Dr. Jones'),
+    (3, 'History', 'Prof. Brown');
+
+-- Create the 'Enrollments' table to link students to courses
+CREATE TABLE enrollments (
+    enrollment_id INT PRIMARY KEY,
+    student_id INT,
+    course_id INT,
+    FOREIGN KEY (student_id) REFERENCES students(student_id),
+    FOREIGN KEY (course_id) REFERENCES courses(course_id)
+);
+
+-- Insert data into the 'Enrollments' table
+INSERT INTO enrollments (enrollment_id, student_id, course_id)
+VALUES
+    (1, 1, 1), -- Alice enrolled in Mathematics
+    (2, 2, 2), -- Bob enrolled in Physics
+    (3, 3, 1), -- Charlie enrolled in Mathematics
+    (4, 4, 3), -- David enrolled in History
+    (5, 5, 1), -- Eva enrolled in Mathematics
+    (6, 6, 2); -- Frank enrolled in Physics
+
+-- Inner Join Example: Retrieve students enrolled in the Mathematics course using an INNER JOIN
+SELECT students.student_name, courses.course_name
+FROM students
+INNER JOIN enrollments ON students.student_id = enrollments.student_id
+INNER JOIN courses ON enrollments.course_id = courses.course_id
+WHERE courses.course_name = 'Mathematics';
+
+-- Left Outer Join Example: Retrieve all students and their enrolled courses, even if they are not enrolled in any course
+SELECT students.student_name, COALESCE(courses.course_name, '') AS enrolled_course
+FROM students
+LEFT JOIN enrollments ON students.student_id = enrollments.student_id
+LEFT JOIN courses ON enrollments.course_id = courses.course_id;
+
+-- Right Outer Join Example: Retrieve all courses and the students enrolled in each course, even if there are no students enrolled
+SELECT courses.course_name, GROUP_CONCAT(students.student_name SEPARATOR ', ') AS enrolled_students
+FROM courses
+RIGHT JOIN enrollments ON courses.course_id = enrollments.course_id
+RIGHT JOIN students ON enrollments.student_id = students.student_id
+GROUP BY courses.course_id;
+
+-- Full Outer Join Example: Retrieve all students and all courses, along with their enrollment information, even if there are students or courses without enrollments
+SELECT students.student_name, courses.course_name,
+       CASE WHEN enrollments.enrollment_id IS NOT NULL THEN 1 ELSE 0 END AS enrolled
+FROM students
+FULL OUTER JOIN enrollments ON students.student_id = enrollments.student_id
+FULL OUTER JOIN courses ON enrollments.course_id = courses.course_id;

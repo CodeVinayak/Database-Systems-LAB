@@ -1,0 +1,56 @@
+IF-ELSE Statement:
+
+
+DECLARE
+    num1 NUMBER := 1;
+
+BEGIN
+    IF num1 > 5 THEN
+        DBMS_OUTPUT.PUT_LINE('The number is greater than 5.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('The number is not greater than 5.');
+    END IF;
+END;
+/
+
+FOR LOOP:
+
+DECLARE
+    total_sum NUMBER := 0;
+
+BEGIN
+    FOR loop_counter IN 1..5
+    LOOP
+        total_sum := total_sum + loop_counter;
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Total Sum using FOR LOOP: ' || total_sum);
+END;
+/
+
+WHILE LOOP:
+
+DECLARE
+    while_counter NUMBER := 1;
+
+BEGIN
+    WHILE while_counter <= 5
+    LOOP
+        DBMS_OUTPUT.PUT_LINE('Element ' || while_counter || ': ' || while_counter);
+        while_counter := while_counter + 1;
+    END LOOP;
+END;
+/
+
+Nested IF-ELSE Statement:
+DECLARE
+    num1 NUMBER := 5;
+
+BEGIN
+    IF num1 > 5 THEN
+        DBMS_OUTPUT.PUT_LINE('The number is greater than 5.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('The number is not greater than 5.');
+    END IF;
+END;
+/

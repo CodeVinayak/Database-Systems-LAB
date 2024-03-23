@@ -1,0 +1,26 @@
+-- Create the new_employees table
+CREATE TABLE new_employees (
+    employee_id NUMBER PRIMARY KEY,
+    first_name VARCHAR2(50),
+    last_name VARCHAR2(50),
+    salary NUMBER
+);
+
+-- Create the trigger
+CREATE OR REPLACE TRIGGER after_new_employee_insert
+AFTER INSERT ON new_employees
+FOR EACH ROW
+BEGIN
+    -- Check if the salary is above a certain threshold (e.g., 60000) and assign a bonus
+    IF :NEW.salary >= 60000 THEN
+        -- You can perform any action here, such as updating another table or logging
+        DBMS_OUTPUT.PUT_LINE('Employee ' || :NEW.first_name || ' ' || :NEW.last_name || ' is eligible for a bonus.');
+        -- You can update another table or perform any other actions here
+    END IF;
+END after_new_employee_insert;
+/
+
+-- Insert some sample data
+INSERT INTO new_employees VALUES (1, 'John', 'Doe', 65000);
+INSERT INTO new_employees VALUES (2, 'Jane', 'Smith', 55000);
+INSERT INTO new_employees VALUES (3, 'Bob', 'Johnson', 70000);
